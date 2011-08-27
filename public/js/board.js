@@ -15,7 +15,8 @@ function begin() {
   for (var i=0,card; card = board.cards[i]; i++)
     onCreateCard( card );
 
-  var socket = io.connect('http://' + document.location.host);
+  var socketURL =  'http://' + document.location.host + '/boardNamespace/' + board.name
+  var socket = io.connect(socketURL);
   socket.on( 'move', function( coords ) {
     $('#'+coords._id).css('left', coords.x );
     $('#'+coords._id).css('top', coords.y );
@@ -29,6 +30,7 @@ function begin() {
   function createCard( data ) {
     focusNextCreate = true;
     socket.emit('add', {
+      boardName:board.name,
       x: parseInt(Math.random() * 700),
       y: parseInt(Math.random() * 400)
     });
