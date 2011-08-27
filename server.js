@@ -5,7 +5,7 @@ var express = require( 'express' ),
 
 var app = express.createServer();
 var io = sockets.listen(app);
-io.set('log level', 1); 
+io.set('log level', 1);
 
 process.on( "uncaughtException", function( error ) {
   console.error( "Uncaught exception: " + error.message );
@@ -39,13 +39,11 @@ function rebroadcast( socket, events ) {
     socket.on(event, function(data) { socket.broadcast.emit( event, data ); });
   });
 }
-function handleEvents( socket, events ) {
-  for (var event in events)
-    socket.on(event, function(data) { events[event](data,socket); });
-}
 io.sockets.on('connection', function( socket ) {
   rebroadcast(socket, ['move', 'text']);
-  handleEvents(socket, {'add' : addCard});
+  socket.on('add', addCard );
+  socket.on('move_commit', updateCard );
+  socket.on('text_commit', updateCard );
 });
 
 function addCard( card ) {
@@ -53,3 +51,5 @@ function addCard( card ) {
     io.sockets.emit('add', saved);
   });
 }
+
+function updateCard( card ) { board.updateCard(card); }

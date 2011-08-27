@@ -17,19 +17,19 @@ function begin() {
 
   var socket = io.connect('http://' + document.location.host);
   socket.on( 'move', function( coords ) {
-    $('#'+coords.id).css('left', coords.x );
-    $('#'+coords.id).css('top', coords.y );
+    $('#'+coords._id).css('left', coords.x );
+    $('#'+coords._id).css('top', coords.y );
   });
   socket.on( 'add', onCreateCard );
   socket.on( 'text', function( data ) {
-    $('#'+data.id+' textarea').val(data.text);
-    adjustTextarea($('#'+data.id+' textarea')[0]);
+    $('#'+data._id+' textarea').val(data.text);
+    adjustTextarea($('#'+data._id+' textarea')[0]);
   } );
 
   function createCard( data ) {
     socket.emit('add', {
-      x: parseInt(Math.random() * ($('.board').innerWidth() - 296)),
-      y: parseInt(Math.random() * ($('.board').innerHeight() - 300))
+      x: parseInt(Math.random() * 700),
+      y: parseInt(Math.random() * 400)
     });
   }
 
@@ -39,41 +39,51 @@ function begin() {
       .attr('id', data._id)
       .css('left', data.x)
       .css('top', data.y)
+    $('textarea',$card).val(data.text);
     $('.board').append($card);
     $('textarea', $card).focus();
   }
 
-  var dragged;
   $('.card').live('mousedown', function(e) {
     var deltaX = e.clientX-this.offsetLeft, deltaY = e.clientY-this.offsetTop;
-    dragged = this.id;
+    var dragged = this.id, hasMoved = false;
 
-    function move(e) {
-      $('#'+dragged).css('top', e.clientY - deltaY);
-      $('#'+dragged).css('left', e.clientX - deltaX);
-      socket.emit('move', {id:dragged, x:e.clientX - deltaX, y:e.clientY - deltaY});
+    function location() {
+      var card = $('#'+dragged)[0];
+      return {_id:dragged, x:card.offsetLeft, y:card.offsetTop};
     }
 
-    $('body').mousemove(move);
+    function mousemove(e) {
+      hasMoved = true;
+      $('#'+dragged).css('top', e.clientY - deltaY);
+      $('#'+dragged).css('left', e.clientX - deltaX);
+      socket.emit('move', location() );
+    }
 
-    $('body').mouseup(function() {
-      $('body').unbind('mousemove', move);
-      dragged = null;
-    });
+    function mouseup(e) {
+      $(window).unbind('mousemove', mousemove);
+      $(window).unbind('mouseup', mouseup);
+      socket.emit('move_commit', location() );
+    }
+
+    $(window).mousemove(mousemove);
+    $(window).mouseup(mouseup);
   });
 
   $('.card textarea').live('keyup', function() {
     var card = $(this).closest('.card')[0];
-    socket.emit('text', { id:card.id, text:$(this).val() });
+    socket.emit('text', { _id:card.id, text:$(this).val() });
     adjustTextarea(this);
     return false;
   });
 
+  $('.card textarea').live('change', function() {
+    var card = $(this).closest('.card')[0];
+    socket.emit('text_commit', { _id:card.id, text:$(this).val() });
+  });
+
+
   $('button.create').click(function() {
     createCard();
   });
-
-  // DEBUG
-  window.createCard = createCard;
-
 }
