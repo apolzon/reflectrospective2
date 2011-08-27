@@ -11,7 +11,8 @@
     "express": "~2.4.6",
     "jade": "~0.15.2",
     "socket.io": "~0.7.9",
-    "mongodb": "0"
+    "mongodb": "0",
+    "cookie-sessions": "0"
   },
   "devDependencies": {}
 }

@@ -1,7 +1,14 @@
+html {
+  overflow-y: scroll;
+}
+
 body {
   margin: 0;
   padding: none;
   background-image: url('/images/apple-birch-background.jpg');
+  font-family: Helvetica, Arial, sans-serif;
+  color: white;
+  font-size: 14px;
 }
 
 div.board {
@@ -31,7 +38,7 @@ div.board {
 }
 
 .card textarea {
-  font-family: 'Rosario', san-serif;
+  font-family: 'Rosario', sans-serif;
   font-size: 14px;
   text-rendering: optimizeLegibility;
   border: none;
@@ -40,13 +47,43 @@ div.board {
   margin:0;
   width:256px;
   outline: none;
+  resize: none;
 }
 
-#card1 {
-  top: 200px;
-  left: 300px;
+#header {
+  padding: 0.75em;
 }
-#card2 {
-  top: 20px;
-  left: 20px;
+
+#user-info {
+  float: right;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+#user-info span {
+  vertical-align: super;
+  text-shadow: 2px 2px 2px #000;
+}
+
+#user-info img {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5em;
+  border: 1px solid white;
+  -webkit-box-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+}
+
+form#login h1 {
+  margin-top: 0;
+  font-weight: bold;
+  font-size: 2em;
+}
+
+form#login {
+  margin: 3em auto;
+  width: 600px;
+  -webkit-box-shadow: inset 5px 5px 10px rgba(0,0,0,0.5);
+  -webkit-border-radius: 10px;
+  text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+  padding: 3em;
 }

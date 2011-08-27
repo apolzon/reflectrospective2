@@ -12,6 +12,8 @@ function begin() {
   if ( ! board || ! domLoaded || begun ) return;
   begun = true;
 
+  $('#header').append('<div id="user-info"><img src="' + board.avatar_url + '"/><span>' + board.user_id + '</span></div>');
+
   for (var i=0,card; card = board.cards[i]; i++)
     onCreateCard( card );
 
