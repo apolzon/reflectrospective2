@@ -27,10 +27,11 @@ app.get( "/board/:board", function(request, response) { response.render("board")
 
 app.listen( parseInt(process.env.PORT) || 7777 ); 
 
-function rebroadcast( socket, event ) {
-  socket.on(event, function(data) { socket.broadcast.emit( event, data ); });
+function rebroadcast( socket, events ) {
+  events.forEach(function(event) {
+    socket.on(event, function(data) { socket.broadcast.emit( event, data ); });
+  });
 }
 io.sockets.on('connection', function( socket ) {
-  rebroadcast(socket, 'move');
-  rebroadcast(socket, 'text');
+  rebroadcast(socket, ['move', 'text', 'add']);
 });
