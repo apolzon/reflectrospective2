@@ -4,7 +4,17 @@ function adjustTextarea(textarea) {
     $(textarea).css('height',textarea.scrollHeight);
 }
 
-$(function() {
+var board = null, domLoaded = false, begun=false;
+$.getJSON( document.location.pathname+'/info', function(data) { board = data; begin(); })
+$(function() { domLoaded = true; begin(); });
+
+function begin() {
+  if ( ! board || ! domLoaded || begun ) return;
+  begun = true;
+
+  for (var i=0,card; card = board.cards[i]; i++)
+    onCreateCard( card );
+
   var socket = io.connect('http://' + document.location.host);
   socket.on( 'move', function( coords ) {
     $('#'+coords.id).css('left', coords.x );
@@ -66,4 +76,4 @@ $(function() {
   // DEBUG
   window.createCard = createCard;
 
-});
+}

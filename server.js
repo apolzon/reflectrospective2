@@ -26,6 +26,12 @@ app.configure( function() {
 
 app.get( "/board/:board", function(request, response) { response.render("board"); } );
 
+app.get( "/board/:board/info", function(request, response) {
+  board.findCards( {}, board.arrayReducer(function(cards) {
+    response.send({ name:request.params.board, cards:cards});
+  }));
+});
+
 app.listen( parseInt(process.env.PORT) || 7777 ); 
 
 function rebroadcast( socket, events ) {
