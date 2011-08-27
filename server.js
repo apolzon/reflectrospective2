@@ -4,6 +4,7 @@ var express = require( 'express' ),
 
 var app = express.createServer();
 var io = sockets.listen(app);
+io.set('log level', 1); 
 
 process.on( "uncaughtException", function( error ) {
   console.error( "Uncaught exception: " + error.message );
@@ -14,6 +15,7 @@ app.configure( function() {
   app.set( "view engine", "jade" );
   app.use( express.compiler( { src : __dirname + '/public', enable : [ 'less' ] } ) );
   app.use( express.bodyParser() );
+  app.use(express.static(__dirname + '/public'));
   app.error( function( error, request, response ) {
     console.error( error.message );
     if ( error.stack ) console.error( error.stack.join( "\n" ) );
@@ -21,6 +23,13 @@ app.configure( function() {
   });
 });
 
-app.get( "/", function(request, response) { response.render("board"); } );
+app.get( "/board/:board", function(request, response) { response.render("board"); } );
 
 app.listen( parseInt(process.env.PORT) || 7777 ); 
+
+io.sockets.on('connection', function( socket ) {
+  socket.emit('welcome', { text: 'hello, please log in' });
+  socket.on('move', function( coords ) {
+    console.log( "COORDS", coords );
+  });
+});
