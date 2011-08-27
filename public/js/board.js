@@ -4,7 +4,7 @@ function adjustTextarea(textarea) {
     $(textarea).css('height',textarea.scrollHeight + 14);
 }
 
-var board = null, domLoaded = false, begun=false, focusNextCreate = false;
+var board = null, domLoaded = false, begun=false, focusNextCreate = false, cardLocks = {};
 $.getJSON( document.location.pathname+'/info', function(data) { board = data; begin(); })
 $(function() { domLoaded = true; begin(); });
 
@@ -24,12 +24,21 @@ function begin() {
     $('#'+coords._id).css('top', coords.y );
   });
   socket.on( 'add', onCreateCard );
-  socket.on( 'text', function( data ) {
-    $('#'+data._id+' textarea').val(data.text);
-    adjustTextarea($('#'+data._id+' textarea')[0]);
-  } );
+  socket.on( 'text', onText );
   socket.on( 'joined', function( user ) { board.users[user.user_id] = user; } );
   socket.on('connect', function() { socket.emit('join', { user_id:board.user_id }); } );
+
+  // clear outdated locks
+  setInterval(function() {
+    var currentTime = new Date().getTime();
+    for ( var cardId in cardLocks ) {
+      if ( currentTime - cardLocks[cardId].updated > 5000 ) {
+        $('#'+cardId+' .notice').hide();
+        $('#'+cardId+' textarea').attr('disabled','false');;
+        delete cardLocks[cardId];
+      }
+    }
+  }, 100 );
 
   function createCard( data ) {
     focusNextCreate = true;
@@ -42,7 +51,7 @@ function begin() {
 
   function onCreateCard( data )
   {
-    var $card = $('<div class="card"><textarea style="height: auto; "></textarea></div>')
+    var $card = $('<div class="card"><div class="notice"></div><textarea style="height: auto; "></textarea></div>')
       .attr('id', data._id)
       .css('left', data.x)
       .css('top', data.y)
@@ -54,6 +63,15 @@ function begin() {
       focusNextCreate = false;
     }
   }
+
+  function onText( data ) {
+    $('#'+data._id+' textarea').val(data.text).attr('disabled','true');;
+    if ( ! cardLocks[data._id] || cardLocks[data._id].user_id != data.user_id )
+      $('#'+data._id+' .notice').html('<img src="' + board.users[data.author].avatar_url + '"/><span>' + data.author + ' is typing...</span>');
+    $('#'+data._id+' .notice').show();
+    cardLocks[data._id] = { user_id:data.author, updated:new Date().getTime() };
+    adjustTextarea($('#'+data._id+' textarea')[0]);
+  };
 
   $('.card').live('mousedown', function(e) {
     var deltaX = e.clientX-this.offsetLeft, deltaY = e.clientY-this.offsetTop;
@@ -83,7 +101,7 @@ function begin() {
 
   $('.card textarea').live('keyup', function() {
     var card = $(this).closest('.card')[0];
-    socket.emit('text', { _id:card.id, text:$(this).val() });
+    socket.emit('text', { _id:card.id, text:$(this).val(), author:board.user_id });
     adjustTextarea(this);
     return false;
   });
