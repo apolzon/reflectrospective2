@@ -28,8 +28,7 @@ app.get( "/board/:board", function(request, response) { response.render("board")
 app.listen( parseInt(process.env.PORT) || 7777 ); 
 
 io.sockets.on('connection', function( socket ) {
-  socket.emit('welcome', { text: 'hello, please log in' });
   socket.on('move', function( coords ) {
-    console.log( "COORDS", coords );
+    socket.broadcast.emit( 'move', coords );
   });
 });

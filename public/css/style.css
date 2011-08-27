@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  padding: none;
+  background-color: #f1eace;
+}
+
+div.board {
+  height: 800px;
+  position: relative;
+}
+
+
+.card {
+  cursor: pointer;
+  position:absolute;
+  background-color: #ff9;
+  padding: 20px;
+}
+
+#card1 {
+  top: 200px;
+  left: 300px;
+}
+#card2 {
+  top: 20px;
+  left: 20px;
+}
