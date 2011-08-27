@@ -16,7 +16,6 @@ function begin() {
     onCreateCard( card );
 
   var socketURL =  'http://' + document.location.host + '/boardNamespace/' + board.name
-  console.log("Connecting to " + socketURL);
   var socket = io.connect(socketURL);
   socket.on( 'move', function( coords ) {
     $('#'+coords._id).css('left', coords.x );
