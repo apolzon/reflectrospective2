@@ -1,0 +1,16 @@
+{
+  "author": "Ben Lindsey <ben@carbonfive.com>",
+  "name": "carbonite",
+  "description": "A distributed reflection and introspection tool",
+  "version": "0.0.1",
+  "repository": {
+    "url": "git@github.com:nko2/carbonite.git"
+  },
+  "engines": {
+    "node": "~v0.4.11"
+  },
+  "dependencies": {
+    "nko": "~0.1.1"
+  },
+  "devDependencies": {}
+}
