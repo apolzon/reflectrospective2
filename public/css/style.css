@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: none;
-  background-color: #f1eace;
+  background-image: url('/images/apple-birch-background.jpg');
 }
 
 div.board {
@@ -12,16 +12,34 @@ div.board {
 .card {
   cursor: pointer;
   position:absolute;
-  background-color: #ff9;
+  background-color: #eea;
   padding: 20px;
+  border: 1px solid #883;
+
+  background: #dbdb78;
+  background: -moz-linear-gradient(top, #dbdb78 0%, #efff8c 33%, #efff8c 78%, #eff4ab 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dbdb78), color-stop(33%,#efff8c), color-stop(78%,#efff8c), color-stop(100%,#eff4ab));
+  background: -webkit-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+  background: -o-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+  background: -ms-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbdb78', endColorstr='#eff4ab',GradientType=0 );
+  background: linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+
+  -moz-box-shadow: 2px 2px 5px #333;
+  -webkit-box-shadow: 2px 2px 5px #333;
+  box-shadow: 2px 2px 5px #333;
 }
 
 .card textarea {
+  font-family: 'Rosario', san-serif;
+  font-size: 14px;
+  text-rendering: optimizeLegibility;
   border: none;
   background: none;
   padding: 0;
   margin:0;
   width:256px;
+  outline: none;
 }
 
 #card1 {

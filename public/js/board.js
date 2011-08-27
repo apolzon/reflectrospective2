@@ -1,10 +1,10 @@
 function adjustTextarea(textarea) {
   $(textarea).css('height','auto');
-  if ($(textarea).innerHeight() < textarea.scrollHeight) 
-    $(textarea).css('height',textarea.scrollHeight);
+  if ($(textarea).innerHeight() < textarea.scrollHeight)
+    $(textarea).css('height',textarea.scrollHeight + 14);
 }
 
-var board = null, domLoaded = false, begun=false;
+var board = null, domLoaded = false, begun=false, focusNextCreate = false;
 $.getJSON( document.location.pathname+'/info', function(data) { board = data; begin(); })
 $(function() { domLoaded = true; begin(); });
 
@@ -27,6 +27,7 @@ function begin() {
   } );
 
   function createCard( data ) {
+    focusNextCreate = true;
     socket.emit('add', {
       x: parseInt(Math.random() * 700),
       y: parseInt(Math.random() * 400)
@@ -41,7 +42,11 @@ function begin() {
       .css('top', data.y)
     $('textarea',$card).val(data.text);
     $('.board').append($card);
-    $('textarea', $card).focus();
+    adjustTextarea( $('textarea',$card)[0] );
+    if ( focusNextCreate ) {
+      $('textarea', $card).focus();
+      focusNextCreate = false;
+    }
   }
 
   $('.card').live('mousedown', function(e) {
