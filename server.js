@@ -30,19 +30,8 @@ app.configure( function() {
 var boardNamespaces = {};
 
 app.get( "/board/:board", requireAuth, function(request, response) { 
-  if (!boardNamespaces[request.params.board]) {
-    var boardNamespace = 
-      io.of("/boardNamespace/" + request.params.board)
-        .on('connection', function( socket ) {
-          rebroadcast(socket, ['move', 'text']);
-          socket.on('add', function(data) {
-                            addCard(boardNamespace,data); 
-                          });
-          socket.on('move_commit', updateCard );
-          socket.on('text_commit', updateCard );
-      });
-    boardNamespaces[request.params.board] = boardNamespace;
-  }
+  if (!boardNamespaces[request.params.board])
+    createBoardSession( request.params.board );
   response.render("board");
 });
 
@@ -58,9 +47,10 @@ function avatarUrl(user_id) {
 
 app.get( "/board/:board/info", function(request, response) {
   board.findCards( { boardName:request.params.board }, board.arrayReducer(function(cards) {
-    response.send({ 
-      name:request.params.board, 
-      cards:cards, 
+    response.send({
+      name:request.params.board,
+      cards:cards,
+      users:boardNamespaces[request.params.board] || {},
       user_id:request.session.user_id,
       avatar_url: avatarUrl(request.session.user_id),
     });
@@ -97,6 +87,25 @@ app.get( "/logout", function(request, response) {
 });
 
 app.listen( parseInt(process.env.PORT) || 7777 ); 
+
+function createBoardSession( board ) {
+  var boardMembers = {};
+  var boardNamespace = io.of("/boardNamespace/" + board)
+      .on('connection', function( socket ) {
+        rebroadcast(socket, ['move', 'text']);
+        socket.on('join', function( user ) {
+          user.avatar_url = avatarUrl( user.user_id );
+          boardMembers[user.user_id] = user;
+          boardNamespace.emit( 'joined', user );
+        });
+        socket.on('add', function(data) {
+                          addCard(boardNamespace,data);
+                        });
+        socket.on('move_commit', updateCard );
+        socket.on('text_commit', updateCard );
+    });
+  boardNamespaces[board] = boardMembers;
+}
 
 function rebroadcast( socket, events ) {
   events.forEach(function(event) {

@@ -1,6 +1,6 @@
 form#login(action='/login', method='post')
   h1 Login
-  label(for='user_id') Username
-  span.help (user@example.com OR @twitterhandle)
+  label(for='user_id') Username:
   input#user_id(name='user_id')
   button Login
+  .help (user@example.com OR @twitterhandle)

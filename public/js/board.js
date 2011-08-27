@@ -28,6 +28,8 @@ function begin() {
     $('#'+data._id+' textarea').val(data.text);
     adjustTextarea($('#'+data._id+' textarea')[0]);
   } );
+  socket.on( 'joined', function( user ) { board.users[user.user_id] = user; } );
+  socket.on('connect', function() { socket.emit('join', { user_id:board.user_id }); } );
 
   function createCard( data ) {
     focusNextCreate = true;
