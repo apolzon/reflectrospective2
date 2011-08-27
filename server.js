@@ -24,10 +24,28 @@ app.configure( function() {
   });
 });
 
-app.get( "/board/:board", function(request, response) { response.render("board"); } );
+var boardNamespaces = {};
+
+app.get( "/board/:board", function(request, response) { 
+  if (!boardNamespaces[request.params.board]) {
+    var boardNamespace = 
+      io.of("/boardNamespace/" + request.params.board)
+        .on('connection', function( socket ) {
+          rebroadcast(socket, ['move', 'text']);
+          socket.on('add', function(data) {
+                            addCard(boardNamespace,data); 
+                          });
+          socket.on('move_commit', updateCard );
+          socket.on('text_commit', updateCard );
+      });
+    boardNamespaces[request.params.board] = boardNamespace;
+  }
+  response.render("board");
+});
+
 
 app.get( "/board/:board/info", function(request, response) {
-  board.findCards( {}, board.arrayReducer(function(cards) {
+  board.findCards( { boardName:request.params.board }, board.arrayReducer(function(cards) {
     response.send({ name:request.params.board, cards:cards});
   }));
 });
@@ -39,16 +57,10 @@ function rebroadcast( socket, events ) {
     socket.on(event, function(data) { socket.broadcast.emit( event, data ); });
   });
 }
-io.sockets.on('connection', function( socket ) {
-  rebroadcast(socket, ['move', 'text']);
-  socket.on('add', addCard );
-  socket.on('move_commit', updateCard );
-  socket.on('text_commit', updateCard );
-});
 
-function addCard( card ) {
+function addCard( boardNamespace, card ) {
   board.saveCard( card, function( saved ) {
-    io.sockets.emit('add', saved);
+    boardNamespace.emit('add', saved);
   });
 }
 
