@@ -13,6 +13,7 @@ function begin() {
   begun = true;
 
   $('#header').append('<div id="user-info"><img src="' + board.avatar_url + '"/><span>' + board.user_id + '</span></div>');
+  $('#header #title').val(board.title);
 
   for (var i=0,card; card = board.cards[i]; i++)
     onCreateCard( card );
@@ -27,6 +28,7 @@ function begin() {
   socket.on( 'text', onText );
   socket.on( 'joined', function( user ) { board.users[user.user_id] = user; } );
   socket.on('connect', function() { socket.emit('join', { user_id:board.user_id }); } );
+  socket.on('title_changed', function(title) { $('#title').val(title); });
 
   // clear outdated locks
   setInterval(function() {
@@ -111,8 +113,23 @@ function begin() {
     socket.emit('text_commit', { _id:card.id, text:$(this).val() });
   });
 
-
   $('button.create').click(function() {
     createCard();
   });
+
+
+  function titleChanged() {
+    console.log('Title changed to %o!', $('#title').val());
+    socket.emit('title_changed', { title: $('#title').val() });
+  }
+
+  $('#title').keyup(function(e) {
+    if (e.keyCode == 13) {
+      $(this).blur();
+    } else {
+      titleChanged();
+    }
+  });
+
+  $('#title').blur(titleChanged);
 }

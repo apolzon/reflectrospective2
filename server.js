@@ -11,6 +11,11 @@ io.set('log level', 1);
 
 process.on( "uncaughtException", function( error ) {
   console.error( "Uncaught exception: " + error.message );
+  if (error.stack) {
+    console.log('\nStacktrace:')
+    console.log('====================')
+    console.log(error.stack);
+  }
 });
 
 app.configure( function() {
@@ -46,13 +51,15 @@ function avatarUrl(user_id) {
 }
 
 app.get( "/board/:board/info", function(request, response) {
-  board.findCards( { boardName:request.params.board }, board.arrayReducer(function(cards) {
+  var boardName = request.params.board;
+  board.findCards( { boardName:boardName }, board.arrayReducer(function(cards) {
     response.send({
-      name:request.params.board,
+      name:boardName,
       cards:cards,
-      users:boardNamespaces[request.params.board] || {},
+      users:boardNamespaces[boardName] || {},
       user_id:request.session.user_id,
       avatar_url: avatarUrl(request.session.user_id),
+      title: boardName,
     });
   }));
 });
@@ -83,28 +90,34 @@ app.post( "/login", function(request, response) {
 
 app.get( "/logout", function(request, response) {
   request.session = {};
-  response.redirect("/login");
+  response.redirect("/login")
 });
 
 app.listen( parseInt(process.env.PORT) || 7777 ); 
 
-function createBoardSession( board ) {
+function createBoardSession( boardName ) {
   var boardMembers = {};
-  var boardNamespace = io.of("/boardNamespace/" + board)
+  var boardNamespace = io.of("/boardNamespace/" + boardName)
       .on('connection', function( socket ) {
         rebroadcast(socket, ['move', 'text']);
         socket.on('join', function( user ) {
           user.avatar_url = avatarUrl( user.user_id );
           boardMembers[user.user_id] = user;
           boardNamespace.emit( 'joined', user );
+          board.findBoard( boardName, function(b) { socket.emit('title_changed', b.title); });
         });
         socket.on('add', function(data) {
                           addCard(boardNamespace,data);
                         });
         socket.on('move_commit', updateCard );
         socket.on('text_commit', updateCard );
+
+        socket.on('title_changed', function(data) {
+          board.updateBoard(boardName, { title: data.title });
+          socket.broadcast.emit('title_changed', data.title);
+        });
     });
-  boardNamespaces[board] = boardMembers;
+  boardNamespaces[boardName] = boardMembers;
 }
 
 function rebroadcast( socket, events ) {

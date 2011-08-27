@@ -11,7 +11,8 @@ body {
   font-size: 14px;
 }
 
-div.board {
+.board {
+  padding: 20px 0;
   position: relative;
 }
 
@@ -74,6 +75,20 @@ div.board {
 
 #header {
   padding: 0.75em;
+  box-shadow: 0px 5px 10px rgba(0,0,0,.5);
+  height: 25px;
+}
+
+#title {
+  height: 24px;
+  width: 75%;
+  font-size: 1em;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  color: white;
+  border: 0;
+  text-shadow: 2px 2px 2px #000;
 }
 
 #user-info {
