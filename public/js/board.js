@@ -10,24 +10,23 @@ $(function() {
     $('#'+coords.id).css('left', coords.x );
     $('#'+coords.id).css('top', coords.y );
   });
-  socket.on( 'add', createCard );
+  socket.on( 'add', onCreateCard );
   socket.on( 'text', function( data ) {
     $('#'+data.id+' textarea').val(data.text);
     adjustTextarea($('#'+data.id+' textarea')[0]);
   } );
 
   function createCard( data ) {
-    if ( !data ) {
-      data = {
-        id: parseInt(Math.random() * 1000000000),
-        x: parseInt(Math.random() * ($('.board').innerWidth() - 296)),
-        y: parseInt(Math.random() * ($('.board').innerHeight() - 300))
-      }
-      socket.emit('add', data);
-    }
+    socket.emit('add', {
+      x: parseInt(Math.random() * ($('.board').innerWidth() - 296)),
+      y: parseInt(Math.random() * ($('.board').innerHeight() - 300))
+    });
+  }
 
+  function onCreateCard( data )
+  {
     var $card = $('<div class="card"><textarea style="height: auto; "></textarea></div>')
-      .attr('id', data.id)
+      .attr('id', data._id)
       .css('left', data.x)
       .css('top', data.y)
     $('.board').append($card);

@@ -1,6 +1,7 @@
 var express = require( 'express' ),
     sockets = require( 'socket.io' ),
-    nko = require('nko')('XeXQ4S+ArH4oslLH');
+    nko = require('nko')('XeXQ4S+ArH4oslLH'),
+    board = require('./lib/board.js');
 
 var app = express.createServer();
 var io = sockets.listen(app);
@@ -32,6 +33,17 @@ function rebroadcast( socket, events ) {
     socket.on(event, function(data) { socket.broadcast.emit( event, data ); });
   });
 }
+function handleEvents( socket, events ) {
+  for (var event in events)
+    socket.on(event, function(data) { events[event](data,socket); });
+}
 io.sockets.on('connection', function( socket ) {
-  rebroadcast(socket, ['move', 'text', 'add']);
+  rebroadcast(socket, ['move', 'text']);
+  handleEvents(socket, {'add' : addCard});
 });
+
+function addCard( card ) {
+  board.saveCard( card, function( saved ) {
+    io.sockets.emit('add', saved);
+  });
+}
