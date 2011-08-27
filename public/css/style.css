@@ -17,6 +17,13 @@ div.board {
   padding: 20px;
 }
 
+.card textarea {
+  border: none;
+  background: none;
+  padding: 0;
+  margin:0;
+}
+
 #card1 {
   top: 200px;
   left: 300px;

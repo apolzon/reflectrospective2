@@ -1,3 +1,8 @@
+function adjustTextarea(textarea) {
+  $(textarea).css('height','auto');
+  if ($(textarea).innerHeight() < textarea.scrollHeight) 
+    $(textarea).css('height',textarea.scrollHeight);
+}
 
 $(function() {
   var socket = io.connect('http://' + document.location.host);
@@ -5,6 +10,10 @@ $(function() {
     $('#'+coords.id).css('left', coords.x );
     $('#'+coords.id).css('top', coords.y );
   });
+  socket.on( 'text', function( data ) {
+    $('#'+data.id+' textarea').val(data.text);
+    adjustTextarea($('#'+data.id+' textarea')[0]);
+  } );
 
   var dragged;
   $('.card').mousedown(function(e) {
@@ -23,6 +32,12 @@ $(function() {
       $('body').unbind('mousemove', move);
       dragged = null;
     });
+  });
+
+  $('.card textarea').keyup(function() {
+    var card = $(this).closest('.card')[0];
+    socket.emit('text', { id:card.id, text:$(this).val() });
+    adjustTextarea(this);
   });
 
 
