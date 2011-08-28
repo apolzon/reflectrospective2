@@ -50,14 +50,13 @@ body {
 a {
   color: @link_color;
   text-decoration: none;
-}
+  :hover {
+    text-decoration: underline;
+  }
 
-a:hover {
-  text-decoration: underline;
-}
-
-a:visited {
-  color: @link_color;
+  :visited {
+    color: @link_color;
+  }
 }
 
 .card {
@@ -159,8 +158,61 @@ a:visited {
   float: left;
 }
 
-ul#boards {
-  list-style-type: none;
+#boards {
+  margin: 3em auto;
+  width: 560px;
+  .inset-shadow(5px,5px,10px,rgba(0,0,0,0.5));
+  .border-radius(10px);
+  padding: 3em;
+
+  h1 {
+    text-align: center;
+    margin: 0 0 1.1em;
+    font-weight: bold;
+    font-size: 2em;
+    text-shadow: 2px 2px 2px rgba(0,0,0,0.4);
+  }
+
+  form#enter-board {
+    text-align: center;
+    width: 540px;
+    margin: 0 auto;
+    input {
+      border: none;
+      padding: .5em;
+      .inset-shadow(2px,2px,2px,rgba(0,0,0,0.5));
+      width: 350px;
+    }
+  }
+
+  ul {
+    .border-radius(10px);
+    width: 500px;
+    height: 360px;
+    margin: 1em auto;
+    padding: 0;
+    list-style-type: none;
+    background-color: #333;
+    overflow-y:auto;
+
+    li {
+      a {
+        display:block;
+        padding: 10px;
+        background-color: #fff;
+        color: #000;
+        :active, :hover {
+          text-decoration: none;
+        }
+
+        h3 {
+          font-size: 1.2em;
+          font-weight: bold;
+        }
+      }
+      border-bottom: 2px solid #ccc;
+    }
+  }
 }
 
 #user-info {

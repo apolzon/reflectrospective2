@@ -3,11 +3,17 @@
   include includes/user_info
 
 #main-content
-  form#enter-board
-    input#board-name(type='text')
-    button Enter board
-  ul#boards
-    for board in boards
-      li
-        a(href='/boards/' + board.name)= board.name
-script(src="/js/boards.js")
+  #boards
+    h1 Boards
+    form#enter-board
+      input#board-name(type='text')
+      button Enter board
+    ul
+      for board in boards
+        li
+          a(href='/boards/' + board.name)
+            h3= board.title
+            .note-count= board.cards_count
+            .user-count= board.users_count
+  script(src="/js/boards.js")
+
