@@ -13,7 +13,6 @@ function begin() {
   begun = true;
 
   $('#header').append('<div id="user-info"><img src="' + board.avatar_url + '"/><span>' + board.user_id + '</span></div>');
-  $('#header #title').val(board.title);
 
   for (var i=0,card; card = board.cards[i]; i++)
     onCreateCard( card );
