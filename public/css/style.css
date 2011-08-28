@@ -38,6 +38,14 @@ body {
   box-shadow: 2px 2px 5px #333;
 }
 
+.card.i-wish {
+  border-color: red;
+}
+
+.card.i-like {
+  border-color: green;
+}
+
 .card textarea {
   font-family: 'Rosario', sans-serif;
   font-size: 14px;

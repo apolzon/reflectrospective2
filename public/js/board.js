@@ -4,6 +4,16 @@ function adjustTextarea(textarea) {
     $(textarea).css('height',textarea.scrollHeight + 14);
 }
 
+function analyzeCardContent(textarea) {
+  var content = $(textarea).val();
+  var $card = $(textarea).parents('.card');
+  $card.removeClass('i-wish i-like');
+  var matches = $(textarea).val().match(/^i (like|wish)/i);
+  if (matches) {
+    $card.addClass('i-' + matches[1]);
+  }
+}
+
 var board = null, domLoaded = false, begun=false, focusNextCreate = false, cardLocks = {};
 $.getJSON( document.location.pathname+'/info', function(data) { board = data; begin(); })
 $(function() { domLoaded = true; begin(); });
@@ -110,6 +120,7 @@ function begin() {
   $('.card textarea').live('change', function() {
     var card = $(this).closest('.card')[0];
     socket.emit('text_commit', { _id:card.id, text:$(this).val() });
+    analyzeCardContent(this);
   });
 
   $('button.create').click(function() {
