@@ -10,11 +10,13 @@
       button create board
     ul
       for board in boards
-        li(id=board._id)
-          a(href='/boards/' + board.name)
-            .note-count
-              span.count #{boardCounts[board.name]}
-              | &nbsp; notes
-            h3.title= board.title
+        - if (board.name)
+          li(id=board._id)
+            a(href='/boards/' + board.name)
+              .note-count
+                span.count= boardCounts[board.name] || 0
+                | &nbsp; notes
+              h3.title= board.title
+            .activity
   script(src="/js/boards.js")
 

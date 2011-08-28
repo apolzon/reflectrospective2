@@ -79,6 +79,7 @@ function begin() {
     focusNextCreate = true;
     socket.emit('add', {
       boardName:board.name,
+      author:board.user_id,
       x: parseInt(Math.random() * 700),
       y: parseInt(Math.random() * 400)
     });
@@ -123,7 +124,7 @@ function begin() {
 
     function location() {
       var card = $('#'+dragged)[0];
-      return {_id:dragged, x:card.offsetLeft, y:card.offsetTop, moved_by:board.user_id};
+      return {_id:dragged, x:card.offsetLeft, y:card.offsetTop, board_name:board.name, author:board.user_id, moved_by:board.user_id};
     }
 
     function mousemove(e) {
@@ -153,7 +154,7 @@ function begin() {
 
   $('.card textarea').live('change', function() {
     var card = $(this).closest('.card')[0];
-    socket.emit('text_commit', { _id:card.id, text:$(this).val(), author:board.user_id });
+    socket.emit('text_commit', { _id:card.id, text:$(this).val(), board_name:board.name, author:board.user_id });
   });
 
   $('.card .delete').live('click', function() {

@@ -139,13 +139,13 @@ function createBoardSession( boardName ) {
         socket.on('add', function(data) {
           addCard(boardNamespace,data);
           board.findBoard(boardName, function(b) {
-            boards_channel.emit('card_added', b);
+            boards_channel.emit('card_added', b, data.author);
           });
         });
         socket.on('delete', function(data) {
           deleteCard(boardNamespace,data);
           board.findBoard(boardName, function(b) {
-            boards_channel.emit('card_deleted', b);
+            boards_channel.emit('card_deleted', b, data.author);
           });
         });
         socket.on('move_commit', updateCard );
@@ -186,4 +186,9 @@ function addCard( boardNamespace, card ) {
   });
 }
 
-function updateCard( card ) { board.updateCard(card); }
+function updateCard( card ) {
+  board.updateCard(card);
+  board.findBoard(card.board_name, function(b) {
+    boards_channel.emit('user_activity', b, card.author, 'Did something');
+  });
+}
