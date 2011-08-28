@@ -34,10 +34,19 @@ app.configure( function() {
 
 var boardNamespaces = {};
 
-app.get( "/board/:board", requireAuth, function(request, response) { 
+function userInfo(request) {
+  return {
+    user_id:request.session.user_id,
+    avatar_url: avatarUrl(request.session.user_id)
+  };
+}
+
+app.get( "/boards/:board", requireAuth, function(request, response) { 
   if (!boardNamespaces[request.params.board])
     createBoardSession( request.params.board );
-  response.render("board");
+  response.render("board", {
+    user: userInfo(request)
+  });
 });
 
 function avatarUrl(user_id) {
@@ -50,7 +59,7 @@ function avatarUrl(user_id) {
   return "http://www.gravatar.com/avatar/" + md5.digest('hex') + "?d=retro";
 }
 
-app.get( "/board/:board/info", function(request, response) {
+app.get( "/boards/:board/info", function(request, response) {
   var boardName = request.params.board;
   board.findCards( { boardName:boardName }, board.arrayReducer(function(cards) {
     response.send({
@@ -59,6 +68,7 @@ app.get( "/board/:board/info", function(request, response) {
       users:boardNamespaces[boardName] || {},
       user_id:request.session.user_id,
       avatar_url: avatarUrl(request.session.user_id),
+      users:boardNamespaces[boardName] || {},
       title: boardName,
     });
   }));
@@ -91,6 +101,25 @@ app.post( "/login", function(request, response) {
 app.get( "/logout", function(request, response) {
   request.session = {};
   response.redirect("/login")
+});
+
+app.get( "/", function(request, response) {
+  if (request.session && request.session.user_id) {
+    response.redirect("/boards")
+  } else {
+    response.redirect("/login")
+  }
+});
+
+app.get( "/boards", requireAuth, function(request, response) {
+  board.findBoards( {}, board.arrayReducer(function(boards) {
+    response.render("boards", {
+      user: userInfo(request),
+      boards: boards
+    });
+  }));
+  board.findBoards( {}, function(boards) {
+  });
 });
 
 app.listen( parseInt(process.env.PORT) || 7777 ); 

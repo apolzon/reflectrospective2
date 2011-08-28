@@ -23,8 +23,6 @@ function begin() {
   if ( ! board || ! domLoaded || begun ) return;
   begun = true;
 
-  $('#header').append('<div id="user-info"><img src="' + board.avatar_url + '"/><span>' + board.user_id + '</span></div>');
-
   for (var i=0,card; card = board.cards[i]; i++)
     onCreateCard( card );
 
@@ -37,7 +35,7 @@ function begin() {
   socket.on( 'add', onCreateCard );
   socket.on( 'text', onText );
   socket.on( 'joined', function( user ) { board.users[user.user_id] = user; } );
-  socket.on('connect', function() { socket.emit('join', { user_id:board.user_id }); } );
+  socket.on('connect', function() { socket.emit('join', {user_id:board.user_id}); } );
   socket.on('title_changed', function(title) { $('#title').val(title); });
 
   // clear outdated locks

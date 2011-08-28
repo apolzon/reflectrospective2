@@ -27,6 +27,20 @@ body {
   position: relative;
 }
 
+@link_color: white;
+
+a {
+  color: @link_color;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: @link_color;
+}
 
 .card {
   cursor: pointer;
@@ -101,6 +115,16 @@ body {
   color: white;
   border: 0;
   text-shadow: 2px 2px 2px #000;
+  float: left;
+}
+
+#header span.title {
+  font-size: 1.5em;
+  float: left;
+}
+
+ul#boards {
+  list-style-type: none;
 }
 
 #user-info {
