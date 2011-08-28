@@ -50,7 +50,7 @@ app.get( "/boards/:board", requireAuth, function(request, response) {
 
 app.get( "/boards/:board/info", function(request, response) {
   var boardName = request.params.board;
-  board.findCards( { boardName:boardName }, board.arrayReducer(function(cards) {
+  board.findCards( { boardName:boardName, deleted:{$ne:true} }, board.arrayReducer(function(cards) {
     response.send({
       name:boardName,
       cards:cards,
@@ -137,6 +137,9 @@ function createBoardSession( boardName ) {
         socket.on('add', function(data) {
                           addCard(boardNamespace,data);
                         });
+        socket.on('delete', function(data) {
+                          deleteCard(boardNamespace,data);
+                        });
         socket.on('move_commit', updateCard );
         socket.on('text_commit', updateCard );
 
@@ -151,6 +154,12 @@ function createBoardSession( boardName ) {
 function rebroadcast( socket, events ) {
   events.forEach(function(event) {
     socket.on(event, function(data) { socket.broadcast.emit( event, data ); });
+  });
+}
+
+function deleteCard( boardNamespace, card ) {
+  board.removeCard( { _id:card._id }, function() {
+    boardNamespace.emit('delete', card);
   });
 }
 

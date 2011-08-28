@@ -81,6 +81,13 @@ a {
     resize: none;
   }
 
+  img.delete {
+    position: absolute;
+    right: -22px;
+    top: -22px;
+    display: none;
+  }
+
   .notice {
     position: absolute;
     top: -2.5em;
@@ -117,6 +124,7 @@ a {
 }
 
 .card:hover .authors img { visibility: visible; }
+.card:hover img.delete { display: block; }
 
 .card.i-wish {
   .card-background(#fc6);

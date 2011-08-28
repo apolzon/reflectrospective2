@@ -38,6 +38,7 @@ function begin() {
   var socket = io.connect(socketURL);
   socket.on( 'move', onMoveCard )
   socket.on( 'add', onCreateCard );
+  socket.on( 'delete', onDeleteCard );
   socket.on( 'text', onText );
   socket.on( 'joined', function( user ) { board.users[user.user_id] = user; } );
   socket.on('connect', function() { socket.emit('join', {user_id:board.user_id}); } );
@@ -65,6 +66,10 @@ function begin() {
     }
   }
 
+  function onDeleteCard( card ) {
+    $('#'+card._id).remove();
+  }
+
   function notice( cardId, userId, message ) {
     $('#'+cardId+' .notice').html('<img src="' + avatar(userId) + '"/><span>' + cleanHTML( message ) + '</span>')
                             .show();
@@ -85,7 +90,8 @@ function begin() {
   }
 
   function onCreateCard( data ) {
-    var $card = $('<div class="card"><div class="notice"></div><textarea></textarea><div class="authors"></div></div>')
+    var $card = $('<div class="card"><img class="delete" src="/images/delete.png"/><div class="notice"></div>'
+                  +'<textarea></textarea><div class="authors"></div></div>')
       .attr('id', data._id)
       .css('left', data.x)
       .css('top', data.y);
@@ -150,10 +156,16 @@ function begin() {
     socket.emit('text_commit', { _id:card.id, text:$(this).val(), author:board.user_id });
   });
 
+  $('.card .delete').live('click', function() {
+    var card = $(this).closest('.card')[0];
+    socket.emit('delete', { _id:card.id, author:board.user_id });
+    $(card).remove();
+    return false;
+  });
+
   $('button.create').click(function() {
     createCard();
   });
-
 
   function titleChanged() {
     socket.emit('title_changed', { title: $('#title').val() });
