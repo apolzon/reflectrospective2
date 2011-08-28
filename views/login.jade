@@ -2,8 +2,16 @@
   include includes/full_logo
 
 form#login(action='/login', method='post')
-  h1 Login
-  label(for='user_id') Username:
+  h1 First Thing to Reflect On; Who are You?
   input#user_id(name='user_id')
   button Login
-  .help e.g. user@example.com OR @twitterhandle
+  .help
+    | Provide a way for other's to know who you are, either with a
+    a(href='http://en.gravatar.com/site/login/') gravatar
+    |  registered email address, or your
+    a(href='http://twitter.com') twitter
+    |  @username (e.g.
+    a(href='http://twitter.com/carbonfive') @carbonfive
+    |  or
+    a(href='http://twitter.com/node_knockout') @node_knockout
+    )
