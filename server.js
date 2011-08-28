@@ -146,10 +146,19 @@ function createBoardSession( boardName ) {
         socket.on('title_changed', function(data) {
           board.updateBoard(boardName, { title: data.title });
           socket.broadcast.emit('title_changed', data.title);
+          board.findBoard(boardName, function(b) {
+            boards_channel.emit('board_changed', b);
+          });
         });
     });
   boardNamespaces[boardName] = boardMembers;
 }
+
+// Boards index socket handler
+var boards_channel = io.of("/channel/boards")
+  .on('connection', function( socket ) {
+    //console.log("Connected to /channel/boards");
+  });
 
 function rebroadcast( socket, events ) {
   events.forEach(function(event) {
