@@ -175,8 +175,8 @@ a {
   padding: 3em;
 
   h1 {
-    text-align: center;
-    margin: 0 0 1.1em;
+    text-align: left;
+    margin: 0 0 1.1em .8em;
     font-weight: bold;
     font-size: 2em;
     text-shadow: 2px 2px 2px rgba(0,0,0,0.4);
@@ -196,19 +196,18 @@ a {
 
   ul {
     .border-radius(5px);
+    .inset-shadow(2px,2px,2px,rgba(0,0,0,0.75));
     width: 500px;
-    height: 360px;
     margin: 1em auto;
-    padding: 0;
+    padding: 1em;
     list-style-type: none;
-    background-color: #333;
+    background-color: rgba(255,255,255,.6);
     overflow-y:auto;
 
     li {
       a {
         display:block;
-        padding: 10px;
-        background-color: #fff;
+        padding: 0 1em; 
         color: #000;
         :active, :hover {
           text-decoration: none;
@@ -218,8 +217,13 @@ a {
           font-size: 1.2em;
           font-weight: bold;
         }
+
+        .note-count {
+           width: 100px;
+           float: right;
+           text-align: right;
+        }
       }
-      border-bottom: 2px solid #ccc;
     }
   }
 }

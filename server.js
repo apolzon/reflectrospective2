@@ -100,14 +100,16 @@ app.get( "/", function(request, response) {
 });
 
 app.get( "/boards", requireAuth, function(request, response) {
-  board.findBoards( {}, board.arrayReducer(function(boards) {
-    response.render("boards", {
-      user: userInfo(request),
-      boards: boards
+  board.findBoards( {}, board.arrayReducer( function(boards) {
+    board.findBoardCardCounts( function(boardCounts) {
+      var boardCountsByName = boardCounts.reduce( function(o,item) { o[item.boardName]=item.count;return o},{} );
+      response.render("boards", {
+        user: userInfo(request),
+        boards: boards,
+        boardCounts: boardCountsByName
+      });
     });
-  }));
-  board.findBoards( {}, function(boards) {
-  });
+  }) );
 });
 
 app.get( "/user/avatar/:user_id", function(request, response) {
@@ -135,11 +137,17 @@ function createBoardSession( boardName ) {
           board.findBoard( boardName, function(b) { socket.emit('title_changed', b.title); });
         });
         socket.on('add', function(data) {
-                          addCard(boardNamespace,data);
-                        });
+          addCard(boardNamespace,data);
+          board.findBoard(boardName, function(b) {
+            boards_channel.emit('card_added', b);
+          });
+        });
         socket.on('delete', function(data) {
-                          deleteCard(boardNamespace,data);
-                        });
+          deleteCard(boardNamespace,data);
+          board.findBoard(boardName, function(b) {
+            boards_channel.emit('card_deleted', b);
+          });
+        });
         socket.on('move_commit', updateCard );
         socket.on('text_commit', updateCard );
 
