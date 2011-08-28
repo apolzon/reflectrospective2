@@ -1,3 +1,14 @@
+.card-background(@c) {
+  background: @c;
+  background: -webkit-linear-gradient(top, hsl(hue(spin(@c, -8)), 66%, 66%) 0%, hsl(hue(@c), 100%, 77%) 33%, hsl(hue(@c), 100%, 77%) 78%, hsl(hue(@c), 77%, 81%) 100%);
+  //background: -moz-linear-gradient(top, #dbdb78 0%, #efff8c 33%, #efff8c 78%, #eff4ab 100%);
+  //background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dbdb78), color-stop(33%,#efff8c), color-stop(78%,#efff8c), color-stop(100%,#eff4ab));
+  //background: -webkit-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+  //background: -o-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+  //background: -ms-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+  //background: linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+}
+
 html {
   overflow-y: scroll;
 }
@@ -24,14 +35,7 @@ body {
   padding: 20px;
   border: 1px solid #883;
 
-  background: #dbdb78;
-  background: -moz-linear-gradient(top, #dbdb78 0%, #efff8c 33%, #efff8c 78%, #eff4ab 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dbdb78), color-stop(33%,#efff8c), color-stop(78%,#efff8c), color-stop(100%,#eff4ab));
-  background: -webkit-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
-  background: -o-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
-  background: -ms-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbdb78', endColorstr='#eff4ab',GradientType=0 );
-  background: linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+  .card-background(#efff8c);
 
   -moz-box-shadow: 2px 2px 5px #333;
   -webkit-box-shadow: 2px 2px 5px #333;
@@ -39,11 +43,11 @@ body {
 }
 
 .card.i-wish {
-  border-color: red;
+  .card-background(#f00);
 }
 
 .card.i-like {
-  border-color: green;
+  .card-background(#89d087);
 }
 
 .card textarea {
