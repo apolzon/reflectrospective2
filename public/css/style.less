@@ -1,12 +1,30 @@
+.inset-shadow(@x, @y, @blur, @color) {
+  -webkit-box-shadow: inset @arguments;
+  -moz-box-shadow: inset @arguments;
+  box-shadow: inset @arguments;
+}
+
+.box-shadow(@x, @y, @blur, @color) {
+  box-shadow: @arguments;
+  -moz-box-shadow: @arguments;
+  -webkit-box-shadow: @arguments;
+}
+
+.border-radius(@radius: 5px) {
+  border-radius: @radius;
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+}
+
 .card-background(@c) {
   background: @c;
-  background: -webkit-linear-gradient(top, hsl(hue(spin(@c, -8)), 66%, 66%) 0%, hsl(hue(@c), 100%, 77%) 33%, hsl(hue(@c), 100%, 77%) 78%, hsl(hue(@c), 77%, 81%) 100%);
-  //background: -moz-linear-gradient(top, #dbdb78 0%, #efff8c 33%, #efff8c 78%, #eff4ab 100%);
-  //background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dbdb78), color-stop(33%,#efff8c), color-stop(78%,#efff8c), color-stop(100%,#eff4ab));
-  //background: -webkit-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
-  //background: -o-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
-  //background: -ms-linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
-  //background: linear-gradient(top, #dbdb78 0%,#efff8c 33%,#efff8c 78%,#eff4ab 100%);
+  @c0: hsl(hue(spin(@c, -8)), 66%, 66%);
+  @c1: hsl(hue(@c), 100%, 77%);
+  @c2: hsl(hue(@c), 100%, 77%);
+  @c3: hsl(hue(@c), 77%, 81%);
+  background: -webkit-linear-gradient(top, @c0 0%, @c1 33%, @c2 78%, @c3 100%);
+  background: -moz-linear-gradient(top, @c0 0%, @c1 33%, @c2 78%, @c3 100%);
+  background: linear-gradient(top, @c0 0%, @c1 33%, @c2 78%, @c3 100%);
 }
 
 html {
@@ -48,12 +66,8 @@ a:visited {
   background-color: #eea;
   padding: 20px;
   border: 1px solid #883;
-
   .card-background(#efff8c);
-
-  -moz-box-shadow: 2px 2px 5px #333;
-  -webkit-box-shadow: 2px 2px 5px #333;
-  box-shadow: 2px 2px 5px #333;
+  .box-shadow(2px, 2px, 5px, #333);
 }
 
 .card.i-wish {
@@ -91,7 +105,7 @@ a:visited {
   height: 20px;
   margin-right: 0.5em;
   border: 1px solid white;
-  -webkit-box-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+  .box-shadow(2px,2px,3px,rgba(0,0,0,0.5));
 }
 
 .card .notice span {
@@ -147,7 +161,7 @@ ul#boards {
   height: 20px;
   margin-right: 0.5em;
   border: 1px solid white;
-  -webkit-box-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+  .box-shadow(2px, 2px, 3px, rgba(0,0,0,0.5);
 }
 
 form#login h1 {
@@ -163,29 +177,31 @@ form#login label {
 }
 
 form#login input {
-  -webkit-border-radius: 5px;
+  .border-radius;
   border: none;
   padding: .5em;
-  -webkit-box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.5);
-  width: 361px;
+  .inset-shadow(2px,2px,2px,rgba(0,0,0,0.5));
+  width: 350px;
 }
 
 button {
+  .border-radius;
   padding: .5em 1em;
-  -webkit-border-radius: 5px;
   background-color: white;
   border: none;
   margin: 0 0 0 2em;
-  -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  .box-shadow(1px, 1px, 2px, rgba(0, 0, 0, 0.5));
 }
 
 button:hover {
   cursor: pointer;
-  -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 1);
+  .box-shadow(2px, 2px, 2px, rgba(0, 0, 0, 1));
 }
 
 button:active {
   -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 
 form#login .help {
@@ -197,8 +213,8 @@ form#login .help {
 form#login {
   margin: 3em auto;
   width: 560px;
-  -webkit-box-shadow: inset 5px 5px 10px rgba(0,0,0,0.5);
-  -webkit-border-radius: 10px;
+  .inset-shadow(5px,5px,10px,rgba(0,0,0,0.5));
+  .border-radius(10px);
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
   padding: 3em;
 }
