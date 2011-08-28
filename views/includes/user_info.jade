@@ -1,7 +1,8 @@
-- if(user)
-  #user-info
+#user-info
+  - if(user)
     img(src='/user/avatar/#{encodeURIComponent(user.user_id)}')
     span
       = user.user_id
       &nbsp;
       a(href='/logout') logout
+  iframe(style="margin-left:0.5em;background:rgba(255, 255, 255, 0.2);border-radius:3px",src="http://nodeknockout.com/iframe/carbonite",frameborder="0",scrolling="no",allowtransparency="true",width="115",height="25")
