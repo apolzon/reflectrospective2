@@ -119,7 +119,6 @@ function begin() {
 
 
   function titleChanged() {
-    console.log('Title changed to %o!', $('#title').val());
     socket.emit('title_changed', { title: $('#title').val() });
   }
 
