@@ -23,17 +23,18 @@ function begin() {
   if ( ! board || ! domLoaded || begun ) return;
   begun = true;
 
-  $('#header').append('<div id="user-info"><img src="' + board.avatar_url + '"/><span>' + board.user_id + '</span></div>');
+  function cleanHTML( str ) {
+    return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g,'&amp;');
+  }
+
+  $('#header').append('<div id="user-info"><img src="' + board.avatar_url + '"/><span>' + cleanHTML( board.user_id ) + '</span></div>');
 
   for (var i=0,card; card = board.cards[i]; i++)
     onCreateCard( card );
 
   var socketURL =  'http://' + document.location.host + '/boardNamespace/' + board.name
   var socket = io.connect(socketURL);
-  socket.on( 'move', function( coords ) {
-    $('#'+coords._id).css('left', coords.x );
-    $('#'+coords._id).css('top', coords.y );
-  });
+  socket.on( 'move', onMoveCard )
   socket.on( 'add', onCreateCard );
   socket.on( 'text', onText );
   socket.on( 'joined', function( user ) { board.users[user.user_id] = user; } );
@@ -44,13 +45,28 @@ function begin() {
   setInterval(function() {
     var currentTime = new Date().getTime();
     for ( var cardId in cardLocks ) {
-      if ( currentTime - cardLocks[cardId].updated > 5000 ) {
+      var timeout = cardLocks[cardId].move ? 500 : 5000;
+      if ( currentTime - cardLocks[cardId].updated > timeout ) {
         $('#'+cardId+' .notice').hide();
-        $('#'+cardId+' textarea').attr('disabled','false');;
+        $('#'+cardId+' textarea').removeAttr('disabled');
         delete cardLocks[cardId];
       }
     }
   }, 100 );
+
+  function onMoveCard( coords ) {
+    $('#'+coords._id).css('left', coords.x );
+    $('#'+coords._id).css('top', coords.y );
+    if ( ! $('#'+coords._id+' notice').is(':visible') ) {
+      notice( coords._id, coords.moved_by, coords.moved_by );
+      cardLocks[coords._id] = { user_id:coords.moved_by, updated:new Date().getTime(), move:true };
+    }
+  }
+
+  function notice( cardId, userId, message ) {
+    $('#'+cardId+' .notice').html('<img src="' + board.users[userId].avatar_url + '"/><span>' + cleanHTML( message ) + '</span>')
+                            .show();
+  }
 
   function createCard( data ) {
     focusNextCreate = true;
@@ -61,8 +77,7 @@ function begin() {
     });
   }
 
-  function onCreateCard( data )
-  {
+  function onCreateCard( data ) {
     var $card = $('<div class="card"><div class="notice"></div><textarea style="height: auto; "></textarea></div>')
       .attr('id', data._id)
       .css('left', data.x)
@@ -78,9 +93,9 @@ function begin() {
 
   function onText( data ) {
     var $ta = $('#'+data._id+' textarea');
-    $ta.val(data.text).attr('disabled','true');;
-    if ( ! cardLocks[data._id] || cardLocks[data._id].user_id != data.user_id )
-      $('#'+data._id+' .notice').html('<img src="' + board.users[data.author].avatar_url + '"/><span>' + data.author + ' is typing...</span>');
+    $ta.val(data.text).attr('disabled','disabled');;
+    if ( ! cardLocks[data._id] || cardLocks[data._id].user_id != data.author )
+      notice( data._id, data.author, data.author + ' is typing...' );
     $('#'+data._id+' .notice').show();
     cardLocks[data._id] = { user_id:data.author, updated:new Date().getTime() };
     adjustTextarea($ta[0]);
@@ -92,7 +107,7 @@ function begin() {
 
     function location() {
       var card = $('#'+dragged)[0];
-      return {_id:dragged, x:card.offsetLeft, y:card.offsetTop};
+      return {_id:dragged, x:card.offsetLeft, y:card.offsetTop, moved_by:board.user_id};
     }
 
     function mousemove(e) {
