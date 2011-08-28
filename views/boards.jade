@@ -2,7 +2,12 @@
   span.title Reflectrospective!
   include includes/user_info
 
-ul#boards
-  for board in boards
-    li
-      a(href='/boards/' + board.name)= board.name
+#main-content
+  form#enter-board
+    input#board-name(type='text')
+    button Enter board
+  ul#boards
+    for board in boards
+      li
+        a(href='/boards/' + board.name)= board.name
+script(src="/js/boards.js")
