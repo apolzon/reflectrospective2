@@ -35,11 +35,8 @@ app.configure( function() {
 var boardNamespaces = {};
 
 function userInfo(request) {
-  if (request.session.user_id) {
-    return {
-      user_id:request.session.user_id,
-    };
-  }
+  if ( request.session && request.session.user_id )
+    return { user_id:request.session.user_id }
 
   return undefined;
 }
