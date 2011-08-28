@@ -1,5 +1,5 @@
 #user-info
-  img(src=user.avatar_url)
+  img(src='/user/avatar/#{encodeURIComponent(user.user_id)}')
   span
     = user.user_id
     &nbsp;

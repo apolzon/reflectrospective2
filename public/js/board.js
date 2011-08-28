@@ -28,7 +28,7 @@ function begin() {
   }
 
   function avatar( user ) {
-    return ( board.users[user] || {} ).avatar_url;
+    return '/user/avatar/' + encodeURIComponent( user );
   }
 
   for (var i=0,card; card = board.cards[i]; i++)

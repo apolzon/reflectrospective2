@@ -37,7 +37,6 @@ var boardNamespaces = {};
 function userInfo(request) {
   return {
     user_id:request.session.user_id,
-    avatar_url: avatarUrl(request.session.user_id)
   };
 }
 
@@ -49,16 +48,6 @@ app.get( "/boards/:board", requireAuth, function(request, response) {
   });
 });
 
-function avatarUrl(user_id) {
-  var m;
-  if ( m = /^@(.*)/.exec(user_id) ) {
-    return "http://api.twitter.com/1/users/profile_image?size=normal&screen_name=" + encodeURIComponent(m[1]);
-  }
-  var md5 = require('crypto').createHash('md5');
-  md5.update(user_id);
-  return "http://www.gravatar.com/avatar/" + md5.digest('hex') + "?d=retro";
-}
-
 app.get( "/boards/:board/info", function(request, response) {
   var boardName = request.params.board;
   board.findCards( { boardName:boardName }, board.arrayReducer(function(cards) {
@@ -67,7 +56,6 @@ app.get( "/boards/:board/info", function(request, response) {
       cards:cards,
       users:boardNamespaces[boardName] || {},
       user_id:request.session.user_id,
-      avatar_url: avatarUrl(request.session.user_id),
       users:boardNamespaces[boardName] || {},
       title: boardName,
     });
@@ -122,6 +110,18 @@ app.get( "/boards", requireAuth, function(request, response) {
   });
 });
 
+app.get( "/user/avatar/:user_id", function(request, response) {
+  var url, m, md5;
+  if ( m = /^@(.*)/.exec(request.params.user_id) ) {
+    url = "http://api.twitter.com/1/users/profile_image?size=normal&screen_name=" + encodeURIComponent(m[1]);
+  } else {
+    md5 = require('crypto').createHash('md5');
+    md5.update(request.params.user_id);
+    url = "http://www.gravatar.com/avatar/" + md5.digest('hex') + "?d=retro";
+  }
+  response.redirect( url );
+});
+
 app.listen( parseInt(process.env.PORT) || 7777 ); 
 
 function createBoardSession( boardName ) {
@@ -130,7 +130,6 @@ function createBoardSession( boardName ) {
       .on('connection', function( socket ) {
         rebroadcast(socket, ['move', 'text']);
         socket.on('join', function( user ) {
-          user.avatar_url = avatarUrl( user.user_id );
           boardMembers[user.user_id] = user;
           boardNamespace.emit( 'joined', user );
           board.findBoard( boardName, function(b) { socket.emit('title_changed', b.title); });
