@@ -2,6 +2,7 @@ function adjustTextarea(textarea) {
   $(textarea).css('height','auto');
   if ($(textarea).innerHeight() < textarea.scrollHeight)
     $(textarea).css('height',textarea.scrollHeight + 14);
+  analyzeCardContent(textarea);
 }
 
 function analyzeCardContent(textarea) {
@@ -76,12 +77,13 @@ function begin() {
   }
 
   function onText( data ) {
-    $('#'+data._id+' textarea').val(data.text).attr('disabled','true');;
+    var $ta = $('#'+data._id+' textarea');
+    $ta.val(data.text).attr('disabled','true');;
     if ( ! cardLocks[data._id] || cardLocks[data._id].user_id != data.user_id )
       $('#'+data._id+' .notice').html('<img src="' + board.users[data.author].avatar_url + '"/><span>' + data.author + ' is typing...</span>');
     $('#'+data._id+' .notice').show();
     cardLocks[data._id] = { user_id:data.author, updated:new Date().getTime() };
-    adjustTextarea($('#'+data._id+' textarea')[0]);
+    adjustTextarea($ta[0]);
   };
 
   $('.card').live('mousedown', function(e) {
@@ -120,7 +122,6 @@ function begin() {
   $('.card textarea').live('change', function() {
     var card = $(this).closest('.card')[0];
     socket.emit('text_commit', { _id:card.id, text:$(this).val() });
-    analyzeCardContent(this);
   });
 
   $('button.create').click(function() {
