@@ -1,6 +1,7 @@
-#user-info
-  img(src='/user/avatar/#{encodeURIComponent(user.user_id)}')
-  span
-    = user.user_id
-    &nbsp;
-    a(href='/logout') logout
+- if(user)
+  #user-info
+    img(src='/user/avatar/#{encodeURIComponent(user.user_id)}')
+    span
+      = user.user_id
+      &nbsp;
+      a(href='/logout') logout

@@ -3,20 +3,38 @@
   include includes/user_info
 
 #main-content
-  #boards
-    h1 Boards
-    form#enter-board
-      input#board-name(type='text')
-      button create board
-    ul
-      for board in boards
-        - if (board.name)
-          li(id=board._id)
-            a(href='/boards/' + board.name)
-              .note-count
-                span.count= boardCounts[board.name] || 0
-                | &nbsp; notes
-              h3.title= board.title
-            .activity
-  script(src="/js/boards.js")
+  #home
+    #promotional
+      .note
+        h2 Let's Reflect Together!
+        ol
+          li Create or login to board
+          li Post your thoughts in real-time
+          li Edit and group each other's thoughts
+          li Discuss what you find!
+      .general
+        h3 Why Reflect?
+        | Reflection and retrospective meetings allow you to look back 
+        | at your shared experiences, discover common desires, and apply
+        | them to future work.
+        h3 How to Reflect?
+        | Connect to a board and take turns to post your
+        | thoughts. Edit and group similar thoughts togeter.
+    #boards
+      h2 Here's what we're reflecting about!
+      form#enter-board
+        input#board-name(type='text')
+        button create board
+      ul
+        for board in boards
+          - if (board.name)
+            li(id=board._id)
+              a(href='/boards/' + board.name)
+                .note-count
+                  span.count= boardCounts[board.name] || 0
+                  | &nbsp; notes
+                h4.title= board.title
+              .activity
+
+script(src="/js/boards.js")
 

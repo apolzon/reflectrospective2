@@ -35,9 +35,13 @@ app.configure( function() {
 var boardNamespaces = {};
 
 function userInfo(request) {
-  return {
-    user_id:request.session.user_id,
-  };
+  if (request.session.user_id) {
+    return {
+      user_id:request.session.user_id,
+    };
+  }
+
+  return undefined;
 }
 
 app.get( "/boards/:board", requireAuth, function(request, response) { 
@@ -88,18 +92,14 @@ app.post( "/login", function(request, response) {
 
 app.get( "/logout", function(request, response) {
   request.session = {};
-  response.redirect("/login")
+  response.redirect("/")
 });
 
 app.get( "/", function(request, response) {
-  if (request.session && request.session.user_id) {
     response.redirect("/boards")
-  } else {
-    response.redirect("/login")
-  }
 });
 
-app.get( "/boards", requireAuth, function(request, response) {
+app.get( "/boards", function(request, response) {
   board.findBoards( {}, board.arrayReducer( function(boards) {
     board.findBoardCardCounts( function(boardCounts) {
       var boardCountsByName = boardCounts.reduce( function(o,item) { o[item.boardName]=item.count;return o},{} );
