@@ -1,0 +1,8 @@
+#header
+  span.title Reflectrospective!
+  include includes/user_info
+
+ul#boards
+  for board in boards
+    li
+      a(href='/boards/' + board.name)= board.name
