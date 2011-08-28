@@ -15,6 +15,14 @@ function analyzeCardContent(textarea) {
   }
 }
 
+var max_z = 1;
+function moveToTop(card) {
+  if (parseInt($(card).css('z-index')) === max_z) {
+    return;
+  }
+  $(card).css('z-index', ++max_z);
+};
+
 var board = null, domLoaded = false, begun=false, focusNextCreate = false, cardLocks = {};
 $.getJSON( document.location.pathname+'/info', function(data) { board = data; begin(); })
 $(function() { domLoaded = true; begin(); });
@@ -58,12 +66,15 @@ function begin() {
   }, 100 );
 
   function onMoveCard( coords ) {
-    $('#'+coords._id).css('left', coords.x );
-    $('#'+coords._id).css('top', coords.y );
-    if ( ! $('#'+coords._id+' notice').is(':visible') ) {
+    var $card = $('#'+coords._id)
+      .css('left', coords.x )
+      .css('top', coords.y );
+
+    if ( ! $('.notice', $card).is(':visible') ) {
       notice( coords._id, coords.moved_by, coords.moved_by );
       cardLocks[coords._id] = { user_id:coords.moved_by, updated:new Date().getTime(), move:true };
     }
+    moveToTop($card);
   }
 
   function onDeleteCard( card ) {
@@ -105,6 +116,7 @@ function begin() {
       $('textarea', $card).focus();
       focusNextCreate = false;
     }
+    moveToTop($card);
   }
 
   function onText( data ) {
@@ -116,6 +128,7 @@ function begin() {
     cardLocks[data._id] = { user_id:data.author, updated:new Date().getTime() };
     addAuthor( data._id, data.author );
     adjustTextarea($ta[0]);
+    moveToTop('#'+data._id);
   };
 
   $('.card').live('mousedown', function(e) {
@@ -142,6 +155,7 @@ function begin() {
 
     $(window).mousemove(mousemove);
     $(window).mouseup(mouseup);
+    moveToTop(this);
   });
 
   $('.card textarea').live('keyup', function() {
