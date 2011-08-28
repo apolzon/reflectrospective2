@@ -24,7 +24,11 @@ function begin() {
   begun = true;
 
   function cleanHTML( str ) {
-    return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g,'&amp;');
+    return (str||'').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g,'&amp;');
+  }
+
+  function avatar( user ) {
+    return ( board.users[user] || {} ).avatar_url;
   }
 
   for (var i=0,card; card = board.cards[i]; i++)
@@ -45,7 +49,7 @@ function begin() {
     for ( var cardId in cardLocks ) {
       var timeout = cardLocks[cardId].move ? 500 : 5000;
       if ( currentTime - cardLocks[cardId].updated > timeout ) {
-        $('#'+cardId+' .notice').hide();
+        $('#'+cardId+' .notice').fadeOut(100);
         $('#'+cardId+' textarea').removeAttr('disabled');
         delete cardLocks[cardId];
       }
@@ -62,7 +66,7 @@ function begin() {
   }
 
   function notice( cardId, userId, message ) {
-    $('#'+cardId+' .notice').html('<img src="' + board.users[userId].avatar_url + '"/><span>' + cleanHTML( message ) + '</span>')
+    $('#'+cardId+' .notice').html('<img src="' + avatar(userId) + '"/><span>' + cleanHTML( message ) + '</span>')
                             .show();
   }
 
@@ -75,13 +79,20 @@ function begin() {
     });
   }
 
+  function addAuthor( cardId, author ) {
+    if ( $('#'+cardId+' .authors img[title="'+author+'"]').length == 0 )
+      $('#'+cardId+' .authors').append('<img src="'+avatar(author)+'" title="'+cleanHTML(author)+'"/>');
+  }
+
   function onCreateCard( data ) {
-    var $card = $('<div class="card"><div class="notice"></div><textarea style="height: auto; "></textarea></div>')
+    var $card = $('<div class="card"><div class="notice"></div><textarea></textarea><div class="authors"></div></div>')
       .attr('id', data._id)
       .css('left', data.x)
-      .css('top', data.y)
+      .css('top', data.y);
     $('textarea',$card).val(data.text);
     $('.board').append($card);
+    if ( data.authors )
+      $( data.authors ).each(function(i,author) { addAuthor( data._id, author ); });
     adjustTextarea( $('textarea',$card)[0] );
     if ( focusNextCreate ) {
       $('textarea', $card).focus();
@@ -96,6 +107,7 @@ function begin() {
       notice( data._id, data.author, data.author + ' is typing...' );
     $('#'+data._id+' .notice').show();
     cardLocks[data._id] = { user_id:data.author, updated:new Date().getTime() };
+    addAuthor( data._id, data.author );
     adjustTextarea($ta[0]);
   };
 
@@ -128,13 +140,14 @@ function begin() {
   $('.card textarea').live('keyup', function() {
     var card = $(this).closest('.card')[0];
     socket.emit('text', { _id:card.id, text:$(this).val(), author:board.user_id });
+    addAuthor( card.id, board.user_id );
     adjustTextarea(this);
     return false;
   });
 
   $('.card textarea').live('change', function() {
     var card = $(this).closest('.card')[0];
-    socket.emit('text_commit', { _id:card.id, text:$(this).val() });
+    socket.emit('text_commit', { _id:card.id, text:$(this).val(), author:board.user_id });
   });
 
   $('button.create').click(function() {
