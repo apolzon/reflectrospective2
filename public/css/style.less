@@ -140,6 +140,29 @@ a {
   box-shadow: 0px 5px 10px rgba(0,0,0,.5);
   height: 25px;
 
+  .title {
+    font-size: 1.5em;
+    float: left;
+    text-shadow: 2px 2px 2px #000;
+    font-size: bold;
+    margin-right: 0.5em;
+
+    .logo {
+      color: #000;
+      text-shadow: none;
+      .card-background(#efff8c);
+      background-color: #eea;
+      border: 1px solid #883;
+      .card-background(#efff8c);
+      .box-shadow(2px, 2px, 5px, #333);
+      margin-right: 0.1em;
+    }
+
+    :hover, :active {
+      text-decoration: none;
+    }
+  }
+
   .create {
     float: left;
     margin: 0 2em 0 0;
@@ -159,11 +182,6 @@ a {
   color: white;
   border: 0;
   text-shadow: 2px 2px 2px #000;
-  float: left;
-}
-
-#header span.title {
-  font-size: 1.5em;
   float: left;
 }
 
