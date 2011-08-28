@@ -191,75 +191,85 @@ a {
   float: left;
 }
 
-#boards {
+#home {
   margin: 3em auto;
-  width: 560px;
-  .inset-shadow(5px,5px,10px,rgba(0,0,0,0.5));
-  .border-radius(10px);
-  padding: 3em;
+  width: 960px;
 
-  h1 {
-    text-align: left;
-    margin: 0 0 1.1em .8em;
-    font-weight: bold;
-    font-size: 2em;
-    text-shadow: 2px 2px 2px rgba(0,0,0,0.4);
-  }
-
-  form#enter-board {
-    text-align: center;
-    width: 540px;
-    margin: 0 auto;
-    input {
-      border: none;
-      padding: .5em;
-      .inset-shadow(2px,2px,2px,rgba(0,0,0,0.5));
-      width: 350px;
-    }
-  }
-
-  ul {
-    .border-radius(5px);
-    .inset-shadow(2px,2px,2px,rgba(0,0,0,0.75));
-    width: 500px;
-    margin: 1em auto;
+  #boards {
+    float:right;
+    width: 560px;
+    .inset-shadow(5px,5px,10px,rgba(0,0,0,0.5));
+    .border-radius(10px);
     padding: 1em;
-    list-style-type: none;
-    background-color: rgba(255,255,255,.6);
-    overflow-y:auto;
 
-    li {
-      padding: 0.5em 1em;
-      a {
-        display:block;
-        color: #000;
-        :active, :hover {
-          text-decoration: none;
+    h2 {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.5em;
+      text-shadow: 2px 2px 2px rgba(0,0,0,0.4);
+    }
+
+    form#enter-board {
+      text-align: center;
+      width: 540px;
+      margin: 0 auto;
+      input {
+        border: none;
+        padding: .5em;
+        .inset-shadow(2px,2px,2px,rgba(0,0,0,0.5));
+        width: 350px;
+      }
+    }
+
+    ul {
+      .border-radius(5px);
+      .inset-shadow(2px,2px,2px,rgba(0,0,0,0.75));
+      width: 500px;
+      margin: 1em auto;
+      padding: 1em;
+      list-style-type: none;
+      background-color: rgba(255,255,255,.6);
+      overflow-y:auto;
+
+      li {
+        padding: 0.5em 1em;
+        border-top: 1px solid #888;
+
+        a {
+          display:block;
+          color: #000;
+          :active, :hover {
+            text-decoration: none;
+          }
+
+          h3.title {
+            overflow: hidden;
+            width: 360px;
+            margin: 0;
+            font-size: 1.2em;
+            line-height: 1.2em;
+            height: 1.2em;
+            font-weight: bold;
+          }
+
+          .note-count {
+             width: 100px;
+             float: right;
+             text-align: right;
+          }
         }
-
-        h3.title {
-          overflow: hidden;
-          width: 360px;
-          margin: 0;
-          font-size: 1.2em;
-          line-height: 1.2em;
-          height: 1.2em;
-          font-weight: bold;
-        }
-
-        .note-count {
-           width: 100px;
-           float: right;
-           text-align: right;
+        .activity {
+          margin-top: 0.5em;
+          img {
+            width: 20px;
+            margin-right: 7px;
+            border: 1px solid white;
+          }
         }
       }
-      .activity {
-        margin-top: 0.5em;
-        img {
-          width: 20px;
-          margin-right: 7px;
-          border: 1px solid white;
-        }
+
+      li:first-child {
+        border-top: none;
       }
     }
   }
@@ -355,5 +365,7 @@ form#login {
     border: 1px solid #883;
     .card-background(#efff8c);
     .box-shadow(2px, 2px, 5px, #333);
+
+    h2 { text-align: center; }
   }
 }
