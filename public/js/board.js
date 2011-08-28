@@ -132,6 +132,9 @@ function begin() {
   };
 
   $('.card').live('mousedown', function(e) {
+    if ($(e.target).is('textarea:focus')) {
+      return true;
+    }
     var deltaX = e.clientX-this.offsetLeft, deltaY = e.clientY-this.offsetTop;
     var dragged = this.id, hasMoved = false;
 

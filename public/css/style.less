@@ -60,7 +60,12 @@ a {
 }
 
 .card {
-  cursor: pointer;
+  cursor: move;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
   position:absolute;
   background-color: #eea;
   padding: 1em 1em .5em 1em;
@@ -87,6 +92,7 @@ a {
     top: -17px;
     display: none;
     width: 33px;
+    cursor: pointer;
   }
 
   .notice {
