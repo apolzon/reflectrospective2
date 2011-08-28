@@ -2,16 +2,14 @@
   include includes/full_logo
 
 form#login(action='/login', method='post')
-  h1 First Thing to Reflect On; Who are You?
+  h1 Sign In
   input#user_id(name='user_id')
   button Login
   .help
-    | Provide a way for other's to know who you are, either with a
+    | Use your
     a(href='http://en.gravatar.com/site/login/') gravatar
-    |  registered email address, or your
+    |   email address OR your
     a(href='http://twitter.com') twitter
-    |  @username (e.g.
+    |  user (e.g.
     a(href='http://twitter.com/carbonfive') @carbonfive
-    |  or
-    a(href='http://twitter.com/node_knockout') @node_knockout
     )
